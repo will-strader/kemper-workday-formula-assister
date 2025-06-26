@@ -2,8 +2,6 @@
 
 # THIS COULD BE TURNED INTO AN INPUT FUNCTION LATER FOR GENERALIZING
 
-# Other note: send this script to myself to put on my GitHub profile
-
 wd_split = ["A&O", "Corporate Costs", "DCC", "FEE", "INVEST", "IPCC"]
 
 cc_hierarchy_ps_raw = [
