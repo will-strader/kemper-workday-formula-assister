@@ -70,7 +70,7 @@ textarea:focus {
 /* submit button */
 button {
   justify-self: start;
-  background: var(--kemper-orange);
+  background: var(--kemper-red);
   color: #fff;
   padding: 0.65rem 1.4rem;
   font-size: 1rem;
