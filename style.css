@@ -1,108 +1,108 @@
 /* Brand tokens */
-:root {
-  --kemper-navy:   #002c56;  /* Kemper Dark Blue */
-  --kemper-orange: #db2416;  /* Kemper Red */
-  --bg-light:      #ffffff;
-  --text-body:     #1a1a1a;
-  --border-radius: 6px;
-  --font-stack:    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+:root{
+--kemper-navy:  #002c56; /* Kemper Dark Blue */
+ --kemper-red: #db2416; /* Kemper Red */
+ --bg-light:   #ffffff;
+ --text-body:   #1a1a1a;
+ --border-radius: 6px;
+ --font-stack: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 /* Global resets */
 *,
 *::before,
 *::after { box-sizing: border-box; }
 body {
-  margin: 0;
-  font-family: var(--font-stack);
-  color: var(--text-body);
-  background: var(--bg-light);
-  line-height: 1.4;
+  margin: 0;
+  font-family: var(--font-stack);
+  color: var(--text-body);
+  background: var(--bg-light);
+  line-height: 1.4;
 }
 /* Header */
 .site-header {
-  background: var(--kemper-navy);
-  color: #fff;
-  padding: 1.2rem 2rem;
-  text-align: center;
+  background: var(--kemper-navy);
+  color: #fff;
+  padding: 1.2rem 2rem;
+  text-align: center;
 }
 .site-header h1 {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: 600;
-  letter-spacing: 0.4px;
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
 }
 /* Layout container */
 .container {
-  max-width: 960px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
 }
 /* Form styling */
 .filter-form {
-  display: grid;
-  gap: 1.2rem;
+  display: grid;
+  gap: 1.2rem;
 }
 /* each textarea + label block */
 .field-group {
-  display: flex;
-  flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 label {
-  font-weight: 600;
-  margin-bottom: 0.4rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
 }
 /* all textarea inputs */
 textarea {
-  resize: vertical;
-  padding: 0.6rem 0.8rem;
-  border: 1px solid #c7c7c7;
-  border-radius: var(--border-radius);
-  font-family: var(--font-stack);
-  font-size: 0.95rem;
-  min-height: 3.2rem;
-  transition: border-color 0.2s ease;
+  resize: vertical;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #c7c7c7;
+  border-radius: var(--border-radius);
+  font-family: var(--font-stack);
+  font-size: 0.95rem;
+  min-height: 3.2rem;
+  transition: border-color 0.2s ease;
 }
 textarea:focus {
-  outline: none;
-  border-color: var(--kemper-navy);
-  box-shadow: 0 0 0 2px rgba(0,44,86,0.15);
+  outline: none;
+  border-color: var(--kemper-navy);
+  box-shadow: 0 0 0 2px rgba(0,44,86,0.15);
 }
 /* submit button */
 button {
-  justify-self: start;
-  background: var(--kemper-orange);
-  color: #fff;
-  padding: 0.65rem 1.4rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: background 0.3s ease;
+  justify-self: start;
+  background: var(--kemper-orange);
+  color: #fff;
+  padding: 0.65rem 1.4rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 button.secondary {
-    background: #f0f0f0;
-    color: var(--text-body);
+    background: #f0f0f0;
+    color: var(--text-body);
 }
 button.secondary:hover {background: #e5e5e5;}
 button:hover,
 button:focus {
-  background: #e56f00; /* darker orange on hover*/
+  background: #e56f00; /* darker orange on hover*/
 }
 /* Output block */
 .output-block {
-  margin-top: 2rem;
+  margin-top: 2rem;
 }
 .output-block h2 {
-  font-size: 1.25rem;
-  margin-bottom: 0.6rem;
-  color: var(--kemper-navy);
+  font-size: 1.25rem;
+  margin-bottom: 0.6rem;
+  color: var(--kemper-navy);
 }
 #output {
-  background: #f6f8fa;
-  border: 1px solid #e1e4e8;
-  border-radius: var(--border-radius);
-  padding: 1rem;
-  white-space: pre-wrap;
-  word-break: break-word;
-  min-height: 80px;
+  background: #f6f8fa;
+  border: 1px solid #e1e4e8;
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 80px;
 }
