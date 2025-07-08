@@ -1,38 +1,46 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-  <meta charset="UTF-8">
-
-  <title>Workday Filter Generator</title>
-
-  <link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8" />
+  <title>Workday Filter Generator</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-
-  <h1>Workday Filter Generator</h1>
-
-  <form id="filterForm">
-    <label for="accounts">Accounts:</label><br>
-    <textarea id="accounts" rows="5"></textarea><br><br>
-    <label for="levels">Levels:</label><br>
-    <textarea id="levels" rows="5"></textarea><br><br>
-
-    <label for="dimensions">Dimensions:</label><br>
-    <textarea id="dimensions" rows="5"></textarea><br><br>
-    <label for="levelAttributes">Level Attributes:</label><br>
-    <textarea id="levelAttributes" rows="5"></textarea><br><br>
-
-    <label for="dimensionAttributes">Dimension Attributes:</label><br>
-    <textarea id="dimensionAttributes" rows="5"></textarea><br><br>
-    <button type="button" onclick="generateFilter()">Generate Filter</button>
-  </form>
-  <h2>Generated Filter:</h2>
-  <pre id="output"></pre>
-  <script src="script.js"></script>
+  <header class="site-header">
+    <h1>Workday Filter Generator</h1>
+  </header>
+  <main class="container">
+    <form id="filterForm" class="filter-form">
+      <div class="field-group">
+        <label for="accounts">Accounts</label>
+        <textarea id="accounts" rows="4" placeholder="e.g. ACCT.General_Expenses"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="levels">Levels</label>
+        <textarea id="levels" rows="4" placeholder="e.g. Corp"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="dimensions">Dimensions</label>
+        <textarea id="dimensions" rows="4" placeholder="e.g. Product"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="levelAttributes">Level Attributes</label>
+        <textarea id="levelAttributes" rows="4" placeholder="e.g. Region=West"></textarea>
+      </div>
+      <div class="field-group">
+        <label for="dimensionAttributes">Dimension Attributes</label>
+        <textarea id="dimensionAttributes" rows="4" placeholder="e.g. Segment=P&C"></textarea>
+      </div>
+      <button type="button" onclick="generateFilter()">Generate Filter</button>
+      <button id="copyFilter" type="button" class="secondary">
+        Copy to Clipboard
+      </button>
+    </form>
+    <section class="output-block">
+      <h2>Generated Filter</h2>
+      <pre id="output" aria-label="Generated filter string"></pre>
+    </section>
+  </main>
+  <script src="script.js"></script>
 </body>
 </html>

@@ -1,52 +1,69 @@
+// Small helpers
 function getInputValues(id) {
-    const raw = document.getElementById(id).value;
-    return raw.split('\n').map(v => v.trim()).filter(v => v !== "");  
-  }
-
-  function parseCategoryGroups(values) {
-    const categoryGroups = {};
-  
-    for (const line of values) {
-      const [category, fieldValue] = line.split("=");
-
-      if (!category || !fieldValue) continue;
-
-      const cleanedValue = fieldValue.replace("(Uncategorized)", "(-)");
-
-      if (!categoryGroups[category]) {
-        categoryGroups[category] = [];
-      }
-      categoryGroups[category].push(cleanedValue);  
-    }
-
-    return categoryGroups;
+  // Split on newlines → trim → drop blanks
+  return document
+    .getElementById(id)
+    .value.split('\n')
+    .map(v => v.trim())
+    .filter(Boolean);
 }
-  function buildAccountFilter(account, categoryGroups) {  
-    const groupBlocks = [];
-
-    for (const [category, values] of Object.entries(categoryGroups)) {
-      const lines = values.map(val => `ACCT.${account}[${category}=${val}]`);
-      const group = lines.join(" +\n");
-      groupBlocks.push(`(${group})`);  
-    }
-
-    return groupBlocks.join(" \n * \n ");  
-  }
-
-  function generateFilter() {
-    const accounts = getInputValues("accounts");
-    const levels = parseCategoryGroups(getInputValues("levels"));
-    const dimensions = parseCategoryGroups(getInputValues("dimensions"));
-    const levelAttributes = parseCategoryGroups(getInputValues("levelAttributes"));
-    const dimensionAttributes = parseCategoryGroups(getInputValues("dimensionAttributes"));  
-    const allGroups = [levels, dimensions, levelAttributes, dimensionAttributes];
-  
-    const fullOutput = accounts.map(account => {
-      // Merge all category groups together
-      const mergedGroups = Object.assign({}, ...allGroups);
-      const filterBlock = buildAccountFilter(account, mergedGroups);
-      return `(${filterBlock})`;
-    });
-
-    document.getElementById("output").textContent = fullOutput.join(" +\n\n");
-  }
+// “Corp=Corp-Alloc HR”  ->  { Corp: ["Corp-Alloc HR"] }
+function parseCategoryGroups(lines) {
+  const groups = {};
+  for (const raw of lines) {
+    const [category, field] = raw.split('=');
+    if (!category || !field) continue;  // ignore malformed lines
+    const val = field.replace('(Uncategorized)', '(-)');
+    (groups[category] = groups[category] || []).push(val);
+  }
+  return groups;
+}
+// Deep-merge objects so duplicate categories concatenate instead of overwrite
+function mergeGroups(...groupObjs) {
+  const merged = {};
+  for (const obj of groupObjs) {
+    for (const [cat, arr] of Object.entries(obj)) {
+      merged[cat] = [...new Set([...(merged[cat] || []), ...arr])];
+    }
+  }
+  return merged;
+}
+// Core builders
+function buildAccountFilter(account, categoryGroups) {
+  const blocks = Object.entries(categoryGroups).map(([cat, vals]) => {
+    const inner = vals.map(v => `ACCT.${account}[${cat}=${v}]`).join(' +\n');
+    return `(${inner})`;
+  });
+  return blocks.join('\n * \n');
+}
+// Main controller
+function generateFilter() {
+  const accounts    = getInputValues('accounts');
+  if (accounts.length === 0) {
+    return (document.getElementById('output').textContent =
+      'Please enter at least one account.');
+  }
+  const levels              = parseCategoryGroups(getInputValues('levels'));
+  const dimensions          = parseCategoryGroups(getInputValues('dimensions'));
+  const levelAttributes     = parseCategoryGroups(getInputValues('levelAttributes'));
+  const dimensionAttributes = parseCategoryGroups(getInputValues('dimensionAttributes'));
+  const merged = mergeGroups(levels, dimensions, levelAttributes, dimensionAttributes);
+  const result = accounts
+    .map(acct => `(${buildAccountFilter(acct, merged)})`)
+    .join(' +\n\n');
+  document.getElementById('output').textContent = result;
+}
+// (Optional) copy helper
+function copyOutput() {
+  const text = document.getElementById('output').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    // Give users a tiny bit of feedback
+    alert('Filter copied to clipboard ✔️');
+  });
+}
+//  Attach copy helper
+document.addEventListener('DOMContentLoaded', () => {
+  const copyBtn = document.getElementById('copyFilter');
+  if (copyBtn) copyBtn.addEventListener('click', copyOutput);
+});
