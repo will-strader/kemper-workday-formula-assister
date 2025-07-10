@@ -15,6 +15,17 @@
         <label for="accounts">Accounts</label>
         <textarea id="accounts" rows="4" placeholder="e.g. ACCT.General_Expenses"></textarea>
       </div>
+      <button type="button" id="openLevelSelector">Select Levels</button>
+      <div id="levelSelectorModal" class="modal hidden">
+        <div class="modal-content">
+          <input type="text" id="levelSearch" placeholder="Search levels..." />
+          <div id="levelList" class="level-list"></div>
+          <div class="level-modal-buttons">
+            <button type="button" id="confirmLevelSelection">Confirm Selection</button>
+            <button type="button" id="clearLevelSelection">Clear</button>
+          </div>
+        </div>
+      </div>
       <div class="field-group">
         <label for="levels">Levels</label>
         <textarea id="levels" rows="4" placeholder="e.g. Corp"></textarea>
