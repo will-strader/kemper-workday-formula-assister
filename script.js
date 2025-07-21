@@ -73,7 +73,7 @@ function generateFilter() {
       'Please enter at least one account.');
   }
   const levels              = parseCategoryGroups(getInputValues('levels'));
-  const dimensions          = parseCategoryGroups(getInputValues('dimensions'));
+  const dimensions          = parseCategoryGroups(collectDimensionLines());
   const levelAttributes     = parseCategoryGroups(getInputValues('levelAttributes'));
   const dimensionAttributes = parseCategoryGroups(getInputValues('dimensionAttributes'));
   const merged = mergeGroups(levels, dimensions, levelAttributes, dimensionAttributes);
@@ -91,11 +91,89 @@ function copyOutput() {
     alert('Filter copied to clipboard ✔️');
   });
 }
-//  Attach copy helper
+
+// Copy helper for percentage output
+function copyPercentage() {
+  const text = document.getElementById('percentageOutput').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Percentage formula copied to clipboard ✔️');
+  });
+}
+// Handle copy‑to‑clipboard placement and binding
 document.addEventListener('DOMContentLoaded', () => {
   const copyBtn = document.getElementById('copyFilter');
-  if (copyBtn) copyBtn.addEventListener('click', copyOutput);
+  const output  = document.getElementById('output');
+  if (copyBtn && output) {
+    // Move the button directly under the "Generated Filter" block
+    output.parentElement.appendChild(copyBtn);
+    copyBtn.addEventListener('click', copyOutput);
+  }
+
+  // Move percentage copy button under its output and bind click
+  const pctCopyBtn = document.getElementById('copyPercentage');
+  const pctOutput  = document.getElementById('percentageOutput');
+  if (pctCopyBtn && pctOutput) {
+    pctOutput.parentElement.appendChild(pctCopyBtn);
+    pctCopyBtn.addEventListener('click', copyPercentage);
+  }
+
+  // Add extra spacing on the Percentage page
+  const pctPage = document.getElementById('percentagePage');
+  if (pctPage) {
+    pctPage.querySelectorAll('.field-group, button, .output-block')
+      .forEach(el => el.style.marginBottom = '1.2rem');
+  }
 });
+
+/* ----------  Percentage Formula Generator ---------- */
+function generatePercentageFormula() {
+  const numerator   = document.getElementById('numeratorAccount')?.value.trim();
+  const denominator = document.getElementById('denominatorAccount')?.value.trim();
+  const outputArea  = document.getElementById('percentageOutput');
+
+  if (!outputArea) return;                     // page not loaded
+
+  if (!numerator || !denominator) {
+    outputArea.textContent = 'Please enter both numerator and denominator accounts.';
+    return;
+  }
+
+  outputArea.textContent = `div(ACCT.${numerator}, ACCT.${denominator})`;
+}
+
+// Attach listener when the Percentage page is present
+document.addEventListener('DOMContentLoaded', () => {
+  const pctBtn = document.getElementById('generatePercentage');
+  if (pctBtn) pctBtn.addEventListener('click', generatePercentageFormula);
+});
+
+// Flat list of available dimensions (non‑nested)
+const dimensionOptions = [
+  "WD_Asset_Spend_Category","WD_Business_Unit","WD_Channel","WD_Employee_ID",
+  "WD_Employee_Type","WD_Coverage","WD_Grade_Level","WD_Job_Profile",
+  "WD_Job_Title","WD_Location","WD_Position_ID","WD_Project","WD_Region",
+  "WD_Treaty","WD_Worker_Type","WD_Spend_Category","Incentive_Bonus_Eligible",
+  "Equity_Comp_Eligible","GW_Product","GW_Policy_Type","WD_Company","GW_MR",
+  "WD_Accident_Year","WD_CAT","WD_Insurance_Type","WD_Split","WD_Status",
+  "WD_Supplier","Employee_Status","WD_Supervisory_Organization",
+  "Integration_Split","WD_Book_Code","Allocation_Results","WD_Cost_Center",
+  "Exclude_From_Allocation","WD_Eliminations"
+];
+// Returns ["WD_Business_Unit=Corp", "WD_Region=US", ...] from every dynamic block
+function collectDimensionLines() {
+  const blocks = document.querySelectorAll('.dimension-block');
+  const lines = [];
+  blocks.forEach(block => {
+    const dimName = block.querySelector('select').value;
+    const textLines = block.querySelector('textarea').value
+      .split('\n')
+      .map(v => v.trim())
+      .filter(Boolean);
+    textLines.forEach(val => lines.push(`${dimName}=${val}`));
+  });
+  return lines;
+}
 
 // Level selector modal
 // This part allows users to select levels from a predefined list and insert them into the textarea
@@ -387,3 +465,91 @@ clearBtn.addEventListener('click', e => {
   selectedLevels.clear();
   renderLevelList(searchInput.value); // rerender based on current search filter
 });
+
+
+/***** Dimension selector logic *****/
+const dimensionModal  = document.getElementById('dimensionModal');
+const dimensionSearch = document.getElementById('dimensionSearch');
+const dimensionList   = document.getElementById('dimensionList');
+const addDimBtn       = document.getElementById('addDimension');
+const confirmDimBtn   = document.getElementById('confirmDimensionSelection');
+const clearDimBtn     = document.getElementById('clearDimensionSelection');
+const dimensionContainer = document.getElementById('dimensionContainer');
+
+let tempSelectedDims = new Set();
+
+function renderDimensionOptions(filter='') {
+  dimensionList.innerHTML = '';
+  dimensionOptions
+    .filter(opt => opt.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(opt => {
+      const btn = document.createElement('button');
+      btn.type = 'button';          // prevent default form submission
+      btn.textContent = opt;
+      btn.className = tempSelectedDims.has(opt) ? 'selected small-btn' : 'small-btn';
+      btn.onclick = () => {
+        if (tempSelectedDims.has(opt)) {
+          tempSelectedDims.delete(opt);
+          btn.classList.remove('selected');
+        } else {
+          tempSelectedDims.add(opt);
+          btn.classList.add('selected');
+        }
+      };
+      dimensionList.appendChild(btn);
+    });
+}
+
+addDimBtn.onclick = () => {
+  tempSelectedDims.clear();        // reset temp
+  renderDimensionOptions();
+  dimensionModal.classList.remove('hidden');
+};
+
+dimensionSearch.oninput = () => renderDimensionOptions(dimensionSearch.value);
+
+dimensionModal.addEventListener('click', e => {
+  if (e.target === dimensionModal) dimensionModal.classList.add('hidden');
+});
+dimensionModal.querySelector('.modal-content').addEventListener('click', e => e.stopPropagation());
+
+confirmDimBtn.onclick = () => {
+  tempSelectedDims.forEach(dim => createDimensionBlock(dim));
+  dimensionModal.classList.add('hidden');
+};
+
+clearDimBtn.onclick = () => {
+  tempSelectedDims.clear();
+  renderDimensionOptions(dimensionSearch.value);
+};
+
+function createDimensionBlock(dimName) {
+  // Avoid duplicate blocks
+  if (document.getElementById(`block-${dimName}`)) return;
+
+  const block = document.createElement('div');
+  block.className = 'dimension-block';
+  block.id = `block-${dimName}`;
+
+  const label = document.createElement('label');
+  label.textContent = dimName;
+
+  const textarea = document.createElement('textarea');
+  textarea.rows = 3;
+
+  const remove = document.createElement('span');
+  remove.textContent = '×';
+  remove.className = 'remove-btn';
+  remove.onclick = () => block.remove();
+
+  // Hidden select keeps track of dimension name for collectDimensionLines()
+  const select = document.createElement('select');
+  select.innerHTML = `<option value="${dimName}" selected>${dimName}</option>`;
+  select.style.display = 'none';
+
+  block.appendChild(label);    // label first (top‑left)
+  block.appendChild(remove);   // close icon top‑right (absolutely positioned)
+  block.appendChild(select);   // hidden select
+  block.appendChild(textarea); // textarea below the label
+  dimensionContainer.appendChild(block);
+}

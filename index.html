@@ -2,14 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Workday Filter Generator</title>
+  <title>Workday Account Generator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="site-header">
-    <h1>Workday Filter Generator</h1>
+    <h1>Workday Account Generator</h1>
   </header>
+  <nav class="page-nav">
+    <button type="button" id="navFilter" class="small-btn">Filter Formulas</button>
+    <button type="button" id="navPercentage" class="small-btn secondary">Percentage Formulas</button>
+  </nav>
   <main class="container">
+    <div id="filterPage">
     <form id="filterForm" class="filter-form">
       <div class="field-group">
         <label for="accounts">Accounts</label>
@@ -30,10 +35,25 @@
         <label for="levels">Levels</label>
         <textarea id="levels" rows="4" placeholder="e.g. Corp"></textarea>
       </div>
-      <div class="field-group">
-        <label for="dimensions">Dimensions</label>
-        <textarea id="dimensions" rows="4" placeholder="e.g. Product"></textarea>
+
+      <!-- Dimension Selector -->
+      <div id="dimensionContainer"></div>
+
+      <button type="button" id="addDimension" class="secondary">Add Dimension</button>
+
+      <!-- Dimension modal -->
+      <div id="dimensionModal" class="modal hidden">
+        <div class="modal-content">
+          <h3>Select Dimensions</h3>
+          <input type="text" id="dimensionSearch" placeholder="Search dimensions…" />
+          <div id="dimensionList" class="dimension-list"></div>
+          <div class="modal-actions">
+            <button type="button" id="confirmDimensionSelection" class="small-btn">Confirm</button>
+            <button type="button" id="clearDimensionSelection" class="small-btn secondary">Clear</button>
+          </div>
+        </div>
       </div>
+
       <div class="field-group">
         <label for="levelAttributes">Level Attributes</label>
         <textarea id="levelAttributes" rows="4" placeholder="e.g. Region=West"></textarea>
@@ -51,7 +71,53 @@
       <h2>Generated Filter</h2>
       <pre id="output" aria-label="Generated filter string"></pre>
     </section>
+    </div>
+    <div id="percentagePage" class="hidden">
+      <div class="field-group">
+        <label for="numeratorAccount">Numerator Account</label>
+        <input type="text" id="numeratorAccount" placeholder="e.g. Revenue" />
+      </div>
+      <div class="field-group">
+        <label for="denominatorAccount">Denominator Account</label>
+        <input type="text" id="denominatorAccount" placeholder="e.g. Total_Premium" />
+      </div>
+      <button type="button" id="generatePercentage">Generate Percentage Formula</button>
+
+      <section class="output-block">
+        <h2>Generated Percentage Formula</h2>
+        <pre id="percentageOutput"></pre>
+        <button id="copyPercentage" type="button" class="secondary">
+          Copy to Clipboard
+        </button>
+      </section>
+    </div>
   </main>
   <script src="script.js"></script>
+  <script>
+    // Simple page toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterPage      = document.getElementById('filterPage');
+      const percentagePage  = document.getElementById('percentagePage');
+      const navFilter       = document.getElementById('navFilter');
+      const navPercentage   = document.getElementById('navPercentage');
+
+      function showFilter() {
+        filterPage.classList.remove('hidden');
+        percentagePage.classList.add('hidden');
+        navFilter.classList.remove('secondary');
+        navPercentage.classList.add('secondary');
+      }
+
+      function showPercentage() {
+        percentagePage.classList.remove('hidden');
+        filterPage.classList.add('hidden');
+        navPercentage.classList.remove('secondary');
+        navFilter.classList.add('secondary');
+      }
+
+      navFilter.addEventListener('click', showFilter);
+      navPercentage.addEventListener('click', showPercentage);
+    });
+  </script>
 </body>
 </html>

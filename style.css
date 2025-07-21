@@ -89,7 +89,7 @@ button.secondary {
 button.secondary:hover {background: #e5e5e5;}
 button:hover,
 button:focus {
-  background: #e56f00; /* darker orange on hover*/
+  background: #bf1e12; /* darker red on hover */
 }
 
 /* Output block */
@@ -136,4 +136,112 @@ button:focus {
 
 .hidden {
   display: none !important;
+}
+
+/* ----------  Modal styles (dimension & level selectors) ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: var(--border-radius);
+  padding: 1.2rem 1.6rem;
+  max-width: 480px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+}
+
+.modal-content input[type="text"] {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #c7c7c7;
+  border-radius: var(--border-radius);
+  margin-bottom: 0.75rem;
+}
+
+.modal-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+
+/* ----------  Dimension block layout ---------- */
+.dimension-block {
+  position: relative;
+  padding-top: 0.3rem;
+  margin-bottom: 1.2rem;
+}
+
+.dimension-block label {
+  display: inline-block;   /* keeps × on same row */
+  padding-right: 1.5rem;   /* prevents label text underlapping × */
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 0.1rem;
+  right: 0.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #888;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.remove-btn:hover {
+  color: #000;
+}
+
+.dimension-block textarea {
+  width: 100%;
+}
+
+
+/* ----------  Page navigation bar ---------- */
+.page-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  background: #f9f9f9;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.page-nav .small-btn {
+  background: var(--kemper-navy);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+}
+
+.page-nav .small-btn.secondary {
+  background: #e5e5e5;
+  color: var(--text-body);
+}
+
+.page-nav .small-btn:hover:not(.secondary),
+.page-nav .small-btn:focus:not(.secondary) {
+  background: #001e3d;        /* darker navy on hover */
+}
+
+.page-nav .small-btn.secondary:hover,
+.page-nav .small-btn.secondary:focus {
+  background: #d4d4d4;
 }
